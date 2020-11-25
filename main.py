@@ -96,7 +96,7 @@ if current_time == (start_time):
     driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[6]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span/span").click()
     sleep(20)
     while current_time != end_time:
-            system(cls)
+            system("cls")
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
             print("Current Time =", current_time)
