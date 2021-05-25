@@ -1,19 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from  selenium.webdriver.common.alert import Alert
 from time import sleep
-import pyautogui
 from datetime import datetime
 from os import system
 import re
+from webdriver_manager.chrome import ChromeDriverManager
 
 def validate_text(regex,inp):
 	if not re.match(regex,inp):
 		return False
 	return True
 
-print("Enter Your Email")
+print("Enter Your Email : " , end="")
 email = input()
 while not(validate_text(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$",email)):
         system("cls")
@@ -21,10 +20,10 @@ while not(validate_text(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$",email)):
         print("Enter Email Again")
         email = input()
 system('cls')
-print("Enter Your Password")
+print("Enter Your Password : " , end="")
 psswd = input()
 system('cls')     
-print("Enter Meeting Code Without Any Special-Character")
+print("Enter Meeting Code Without Any Special-Character : " , end="")
 code = input()
 while not(validate_text(r"^[a-zA-Z0-9]*$",code)):
         system("cls")
@@ -54,10 +53,12 @@ while not(validate_text(r"\d\d:\d\d:\d\d",end_time)):
 
 
 while current_time != (start_time):
+    system("cls")
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
-    system("cls")  
+    print("Current Time =", current_time , " , Start at : " , start_time)
+    sleep(1)
+
 if current_time == (start_time):
     path = "chromedriver.exe"
     opt = Options()
@@ -70,7 +71,7 @@ if current_time == (start_time):
     "profile.default_content_setting_values.notifications": 1 
     })
 
-    driver = webdriver.Chrome(executable_path=path,chrome_options=opt)
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=opt)
     driver.get("https://meet.google.com/new")
     #Email Passed
     search = driver.find_element_by_name("identifier")
@@ -88,18 +89,27 @@ if current_time == (start_time):
     driver.get("https://meet.google.com/lookup/" + code)
     sleep(3)
 
-    # Turn OFF  Video By Default
-    driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[6]/div[3]/div/div/div[2]/div/div[1]/div[1]/div/div[4]/div[1]/div/div/div").click()
-    # Turn OFF Video By Default
-    driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[6]/div[3]/div/div/div[2]/div/div[1]/div[1]/div/div[4]/div[2]/div/div").click()
-    # Join Class
-    driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[6]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span/span").click()
-    sleep(20)
+    
+    try:
+      # Turn OFF  Video and Audio 
+      driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[9]/div[3]/div/div/div[2]/div/div[1]/div[1]/div[1]/div/div[4]/div[1]/div/div/div").click()# Turn OFF Video By Default
+      driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[9]/div[3]/div/div/div[2]/div/div[1]/div[1]/div[1]/div/div[4]/div[2]/div/div").click()
+      # Join Class
+      driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[9]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span").click()
+      sleep(20)
+    except:
+        print("Can't Join, Try Again")
+    
+
     while current_time != end_time:
             system("cls")
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
-            print("Current Time =", current_time)
+            print("Current Time =", current_time , " , End At : " , end_time)
+            sleep(1)
 
     if current_time == end_time:
-        driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div[1]/div/div[6]/div[3]/div[9]/div[2]/div[2]/div").click()
+        driver.find_element_by_xpath("/html/body/div[1]/c-wiz/div[1]/div/div[9]/div[3]/div[9]/div[2]/div[2]/div").click()
+        system("cls")
+        print("Left Meet")
+        driver.close()
